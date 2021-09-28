@@ -1,0 +1,10 @@
+A:\CsProjects\FictionalMapper\bin\Debug\FictionalMapper.exe.config
+A:\CsProjects\FictionalMapper\bin\Debug\FictionalMapper.exe
+A:\CsProjects\FictionalMapper\bin\Debug\FictionalMapper.pdb
+A:\CsProjects\FictionalMapper\obj\Debug\FictionalMapper.csprojAssemblyReference.cache
+A:\CsProjects\FictionalMapper\obj\Debug\FictionalMapper.Properties.Resources.resources
+A:\CsProjects\FictionalMapper\obj\Debug\FictionalMapper.csproj.GenerateResource.cache
+A:\CsProjects\FictionalMapper\obj\Debug\FictionalMapper.csproj.CoreCompileInputs.cache
+A:\CsProjects\FictionalMapper\obj\Debug\FictionalMapper.exe
+A:\CsProjects\FictionalMapper\obj\Debug\FictionalMapper.pdb
+A:\CsProjects\FictionalMapper\obj\Debug\FictionalMapper.Form1.resources

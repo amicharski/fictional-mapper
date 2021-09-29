@@ -19,7 +19,7 @@ namespace FictionalMapper
         public Pen lineMain;
         public Pen lineOutline;
         public Pen drawing;
-        public Brush region;
+        public SolidBrush region;
         public Graphics g;
         public Tool tool;
         public List<Point> points;
@@ -49,12 +49,42 @@ namespace FictionalMapper
             
         }
 
-        private void roadButton_Click(object sender, EventArgs e)
+        private void roadButton_Click(object sender, EventArgs e)   // drawLineButton
         {
             points.Clear();
-
             tool = Tool.LINE;
             toolState.Text = "Tool Being Used: Line";
+        }
+
+        private ArrayList sortElements()    // Absolutely terrible O(n^3) algorithm
+        {                                   // Sort the list so regions are first, then creeks, then the rest of the lines
+            ArrayList tmp = new ArrayList();
+            foreach (object o in elements)
+            {
+                if (o.GetType() == Type.GetType("FictionalMapper.Line", false, false))
+                {
+                    tmp.Add(o);
+                }
+            }
+            foreach (object o in elements)
+            {
+                if (o.GetType() == Type.GetType("FictionalMapper.Line", false, false))
+                {
+                    if (((Line)o).lineType == LineType.CREEK)
+                    {
+                        tmp.Add(o);
+                    }
+                }
+            }
+            foreach (object o in elements)
+            {
+                if (o.GetType() == Type.GetType("FictionalMapper.Region", false, false))
+                {
+                    tmp.Add(o);
+                }
+            }
+            tmp.Reverse();
+            return tmp;
         }
 
         private void paneButton_Click(object sender, EventArgs e) // viewButton
@@ -66,22 +96,45 @@ namespace FictionalMapper
                 case Tool.LINE:
                     Line l = new Line();
                     l.roadName = selectionName;
-                    l.points = points;
+                    l.points = new Point[points.Count];
+                    points.CopyTo(l.points);
                     l.lineType = currentLineType;
                     elements.Add(l);
                     break;
                 case Tool.REGION:
                     Region r = new Region();
-                    r.points = points;
+                    r.points = new Point[points.Count];
+                    points.CopyTo(r.points);
                     r.regionType = currentRegionType;
                     elements.Add(r);
                     break;
             }
-            
-            foreach(object o in elements)
+            elements = sortElements();
+            foreach (object o in elements)
             {
                 int viewableDistance = 0;
-                if (o.GetType() == Type.GetType("FictionalMapper.Line", false, false))
+                if (o.GetType() == Type.GetType("FictionalMapper.Region", false, false))
+                {
+                    switch (((Region)o).regionType)
+                    {
+                        case RegionType.WATER:
+                            region.Color = Colors.water;
+                            break;
+                        case RegionType.BEACH:
+                            region.Color = Colors.beach;
+                            break;
+                        case RegionType.NATURE_LAND:
+                            region.Color = Colors.natureLand;
+                            break;
+                        case RegionType.RURAL_LAND:
+                            region.Color = Colors.ruralLand;
+                            break;
+                        case RegionType.URBAN_LAND:
+                            region.Color = Colors.urbanLand;
+                            break;
+                    }
+                    g.FillPolygon(region, ((Region)o).points.ToArray());
+                } else if (o.GetType() == Type.GetType("FictionalMapper.Line", false, false))
                 {
                     switch (((Line)o).lineType)
                     {
@@ -98,7 +151,7 @@ namespace FictionalMapper
                             break;
                     }
                     
-                    for (int i = 1; i < ((Line)o).points.Count; i++)
+                    for (int i = 1; i < ((Line)o).points.Length; i++)
                     {
                         if(!(((Line)o).lineType == LineType.CREEK))
                         {
@@ -107,14 +160,9 @@ namespace FictionalMapper
                         viewableDistance += distance.Invoke(((Line)o).points[i - 1], ((Line)o).points[i]);
                         g.DrawLine(lineMain, ((Line)o).points[i - 1], ((Line)o).points[i]);
                     }
-                } else if(o.GetType() == Type.GetType("FictionalMapper.Region", false, false))
-                {
-                    g.FillPolygon(region, ((Region)o).points.ToArray());
                 }
-                //MessageBox.Show("viewableDistance: " + viewableDistance.ToString());
                 if (viewableDistance > selectionName.Length * 5)
                 {
-                    //MessageBox.Show(((Line)o).roadName);
                     Label label = new Label();
                     label.Text = ((Line)o).roadName;
                     label.Location = ((Line)o).points[1];
@@ -151,9 +199,15 @@ namespace FictionalMapper
 
         private void canvasPanel_Click(object sender, EventArgs e)
         {
-            Point p = canvasPanel.PointToClient(Cursor.Position);
-            g.DrawEllipse(new Pen(Color.Black, 1), new Rectangle(new Point(p.X-3, p.Y-3), new Size(6, 6)));
-            points.Add(p);
+            if(tool == Tool.LINE || tool == Tool.REGION)
+            {
+                Point p = canvasPanel.PointToClient(Cursor.Position);
+                g.DrawEllipse(new Pen(Color.Black, 1), new Rectangle(new Point(p.X - 3, p.Y - 3), new Size(6, 6)));
+                points.Add(p);
+            } else if(tool == Tool.PARALLEL)
+            {
+
+            }
         }
 
         private void drawTools_SelectedIndexChanged(object sender, EventArgs e)
@@ -223,12 +277,42 @@ namespace FictionalMapper
                 e.Handled = true;
             }
         }
+
+        private void parallelButton_Click(object sender, EventArgs e)
+        {
+            tool = Tool.PARALLEL;
+            toolState.Text = "Tool Being Used: Parallel";
+        }
+
+        private void movePointsButton_Click(object sender, EventArgs e)
+        {
+            tool = Tool.MOVE_POINTS;
+            toolState.Text = "Tool Being Used: Move Points";
+
+
+        }
+
+        private void intersectionsTool_Click(object sender, EventArgs e)
+        {
+            tool = Tool.INTERSECTION;
+            toolState.Text = "Tool Being Used: Intersection";
+        }
+
+        private void perpendicularTool_Click(object sender, EventArgs e)
+        {
+            tool = Tool.PERPENDICULAR;
+            toolState.Text = "Tool Being Used: Perpendicular";
+        }
     }
     public enum Tool
     {
         VIEW = 0,
         LINE = 1,
-        REGION = 2
+        REGION = 2,
+        MOVE_POINTS = 3,
+        PARALLEL = 4,
+        PERPENDICULAR = 5,
+        INTERSECTION = 6
     }
     public enum LineType
     {
@@ -248,17 +332,17 @@ namespace FictionalMapper
     {
         public int highwayNum { get; set; }
         public string roadName { get; set; }
-        public List<Point> points { get; set; }
+        public Point[] points { get; set; }
         public LineType lineType { get; set; }
         public override string ToString()
         {
-            return "lineType: " + this.lineType.ToString();
+            return "lineType: " + lineType.ToString();
         }
     }
 
     public class Region
     {
-        public List<Point> points { get; set; }
+        public Point[] points { get; set; }
         public RegionType regionType { get; set; }
     }
     public static class Colors

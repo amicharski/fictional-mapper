@@ -5,8 +5,8 @@
         /// <summary>
         /// Required designer variable.
         /// </summary>
+        /// 
         private System.ComponentModel.IContainer components = null;
-
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -44,7 +44,7 @@
             this.toolState = new System.Windows.Forms.Label();
             this.drawLineButton = new System.Windows.Forms.Button();
             this.viewButton = new System.Windows.Forms.Button();
-            this.canvasPanel = new System.Windows.Forms.Panel();
+            this.canvasPanel = new NewControls.MapPanel();
             this.perpendicularTool = new System.Windows.Forms.Button();
             this.topPanel.SuspendLayout();
             this.SuspendLayout();
@@ -242,6 +242,8 @@
             this.canvasPanel.Click += new System.EventHandler(this.canvasPanel_Click);
             this.canvasPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.canvasPanel_Paint);
             this.canvasPanel.MouseHover += new System.EventHandler(this.canvasPanel_MouseHover);
+            this.canvasPanel.MouseEnter += new System.EventHandler(this.canvasPanel_OnMouseEnter);
+            this.canvasPanel.MouseLeave += new System.EventHandler(this.canvasPanel_OnMouseLeave);
             // 
             // perpendicularTool
             // 
@@ -272,7 +274,7 @@
         #endregion
 
         private System.Windows.Forms.Panel topPanel;
-        private System.Windows.Forms.Panel canvasPanel;
+        internal NewControls.MapPanel canvasPanel;
         private System.Windows.Forms.Button drawLineButton;
         private System.Windows.Forms.Button viewButton;
         private System.Windows.Forms.Label toolState;

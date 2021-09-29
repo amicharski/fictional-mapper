@@ -14,6 +14,7 @@ namespace FictionalMapper
 {
     public partial class Form1 : Form
     {
+        public RegionType mainRegionStyle;
         private bool mouseInPanel = false;
         public LineType currentLineType;
         public RegionType currentRegionType;
@@ -34,6 +35,7 @@ namespace FictionalMapper
         public Form1()
         {
             InitializeComponent();
+            mainRegionStyle = RegionType.URBAN_LAND;
             g = canvasPanel.CreateGraphics();
             tg = canvasPanel.CreateGraphics();
             tool = Tool.VIEW;
@@ -187,11 +189,30 @@ namespace FictionalMapper
             }
         }
 
+        private Color getRegionColor(RegionType rt)
+        {
+            switch (rt)
+            {
+                case RegionType.WATER:
+                    return Colors.water;
+                case RegionType.BEACH:
+                    return Colors.beach;
+                case RegionType.NATURE_LAND:
+                    return Colors.natureLand;
+                case RegionType.RURAL_LAND:
+                    return Colors.ruralLand;
+                case RegionType.URBAN_LAND:
+                    return Colors.urbanLand;
+                default:
+                    throw new Exception("Invalid color");
+            }
+        }
+
         private void redraw()
         {
             try
             {
-                g.Clear(Color.White);
+                g.Clear(getRegionColor(mainRegionStyle));
                 selectionName = selectionNameBox.Text;
                 switch (tool)
                 {
@@ -217,24 +238,7 @@ namespace FictionalMapper
                     int viewableDistance = 0;
                     if (o.GetType() == Type.GetType("FictionalMapper.Region", false, false))
                     {
-                        switch (((Region)o).regionType)
-                        {
-                            case RegionType.WATER:
-                                region.Color = Colors.water;
-                                break;
-                            case RegionType.BEACH:
-                                region.Color = Colors.beach;
-                                break;
-                            case RegionType.NATURE_LAND:
-                                region.Color = Colors.natureLand;
-                                break;
-                            case RegionType.RURAL_LAND:
-                                region.Color = Colors.ruralLand;
-                                break;
-                            case RegionType.URBAN_LAND:
-                                region.Color = Colors.urbanLand;
-                                break;
-                        }
+                        region.Color = getRegionColor(((Region)o).regionType);
                         g.FillPolygon(region, ((Region)o).points.ToArray());
                     }
                     else if (o.GetType() == Type.GetType("FictionalMapper.Line", false, false))
@@ -349,6 +353,12 @@ namespace FictionalMapper
             redraw();
             tool = Tool.PERPENDICULAR;
             toolState.Text = "Tool Being Used: Perpendicular";
+        }
+
+        private void mainRegionStyleBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            mainRegionStyle = (RegionType)mainRegionStyleBox.SelectedIndex;
+            redraw();
         }
     }
     public enum Tool

@@ -28,6 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.canvasPanel = new FictionalMapper.NewControls.MapPanel();
+            this.topBarTabControl = new System.Windows.Forms.TabControl();
+            this.homeTab = new System.Windows.Forms.TabPage();
             this.topPanel = new System.Windows.Forms.Panel();
             this.perpendicularTool = new System.Windows.Forms.Button();
             this.intersectionTool = new System.Windows.Forms.Button();
@@ -41,22 +44,55 @@
             this.shieldType = new System.Windows.Forms.ListBox();
             this.drawRegionButton = new System.Windows.Forms.Button();
             this.drawingRegions = new System.Windows.Forms.ListBox();
-            this.drawingLines = new System.Windows.Forms.ListBox();
             this.toolState = new System.Windows.Forms.Label();
             this.drawLineButton = new System.Windows.Forms.Button();
             this.viewButton = new System.Windows.Forms.Button();
-            this.canvasPanel = new FictionalMapper.NewControls.MapPanel();
-            this.topBarTabControl = new System.Windows.Forms.TabControl();
-            this.homeTab = new System.Windows.Forms.TabPage();
             this.propertiesTab = new System.Windows.Forms.TabPage();
-            this.mainRegionStyleBox = new System.Windows.Forms.ListBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.topPanel.SuspendLayout();
-            this.canvasPanel.SuspendLayout();
+            this.mainRegionStyleBox = new System.Windows.Forms.ListBox();
+            this.drawingLines = new System.Windows.Forms.ListBox();
             this.topBarTabControl.SuspendLayout();
             this.homeTab.SuspendLayout();
+            this.topPanel.SuspendLayout();
             this.propertiesTab.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // canvasPanel
+            // 
+            this.canvasPanel.BackColor = System.Drawing.Color.White;
+            this.canvasPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.canvasPanel.Location = new System.Drawing.Point(0, -90);
+            this.canvasPanel.Name = "canvasPanel";
+            this.canvasPanel.Size = new System.Drawing.Size(1590, 900);
+            this.canvasPanel.TabIndex = 1;
+            this.canvasPanel.Hover += new System.EventHandler<FictionalMapper.NewControls.MapPanel.HoverEventArgs>(this.canvasPanel_Hover);
+            this.canvasPanel.Click += new System.EventHandler(this.canvasPanel_Click);
+            this.canvasPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.canvasPanel_Paint);
+            this.canvasPanel.MouseEnter += new System.EventHandler(this.canvasPanel_OnMouseEnter);
+            this.canvasPanel.MouseLeave += new System.EventHandler(this.canvasPanel_OnMouseLeave);
+            this.canvasPanel.MouseHover += new System.EventHandler(this.canvasPanel_MouseHover);
+            // 
+            // topBarTabControl
+            // 
+            this.topBarTabControl.Controls.Add(this.homeTab);
+            this.topBarTabControl.Controls.Add(this.propertiesTab);
+            this.topBarTabControl.Dock = System.Windows.Forms.DockStyle.Top;
+            this.topBarTabControl.Location = new System.Drawing.Point(0, 0);
+            this.topBarTabControl.Name = "topBarTabControl";
+            this.topBarTabControl.SelectedIndex = 0;
+            this.topBarTabControl.Size = new System.Drawing.Size(1272, 184);
+            this.topBarTabControl.TabIndex = 16;
+            // 
+            // homeTab
+            // 
+            this.homeTab.Controls.Add(this.topPanel);
+            this.homeTab.Location = new System.Drawing.Point(4, 25);
+            this.homeTab.Name = "homeTab";
+            this.homeTab.Padding = new System.Windows.Forms.Padding(3);
+            this.homeTab.Size = new System.Drawing.Size(1264, 155);
+            this.homeTab.TabIndex = 0;
+            this.homeTab.Text = "Home";
+            this.homeTab.UseVisualStyleBackColor = true;
             // 
             // topPanel
             // 
@@ -76,7 +112,7 @@
             this.topPanel.Controls.Add(this.toolState);
             this.topPanel.Controls.Add(this.drawLineButton);
             this.topPanel.Controls.Add(this.viewButton);
-            this.topPanel.Location = new System.Drawing.Point(6, 6);
+            this.topPanel.Location = new System.Drawing.Point(8, 6);
             this.topPanel.Name = "topPanel";
             this.topPanel.Size = new System.Drawing.Size(1272, 136);
             this.topPanel.TabIndex = 0;
@@ -206,20 +242,6 @@
             this.drawingRegions.TabIndex = 4;
             this.drawingRegions.SelectedIndexChanged += new System.EventHandler(this.drawingRegions_SelectedIndexChanged);
             // 
-            // drawingLines
-            // 
-            this.drawingLines.FormattingEnabled = true;
-            this.drawingLines.ItemHeight = 16;
-            this.drawingLines.Items.AddRange(new object[] {
-            "Highway",
-            "Road",
-            "Creek"});
-            this.drawingLines.Location = new System.Drawing.Point(245, 36);
-            this.drawingLines.Name = "drawingLines";
-            this.drawingLines.Size = new System.Drawing.Size(120, 84);
-            this.drawingLines.TabIndex = 3;
-            this.drawingLines.SelectedIndexChanged += new System.EventHandler(this.drawingLines_SelectedIndexChanged);
-            // 
             // toolState
             // 
             this.toolState.AutoSize = true;
@@ -249,43 +271,6 @@
             this.viewButton.UseVisualStyleBackColor = true;
             this.viewButton.Click += new System.EventHandler(this.paneButton_Click);
             // 
-            // canvasPanel
-            // 
-            this.canvasPanel.BackColor = System.Drawing.Color.White;
-            this.canvasPanel.Controls.Add(this.topBarTabControl);
-            this.canvasPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.canvasPanel.Location = new System.Drawing.Point(0, 0);
-            this.canvasPanel.Name = "canvasPanel";
-            this.canvasPanel.Size = new System.Drawing.Size(1272, 648);
-            this.canvasPanel.TabIndex = 1;
-            this.canvasPanel.Click += new System.EventHandler(this.canvasPanel_Click);
-            this.canvasPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.canvasPanel_Paint);
-            this.canvasPanel.MouseEnter += new System.EventHandler(this.canvasPanel_OnMouseEnter);
-            this.canvasPanel.MouseLeave += new System.EventHandler(this.canvasPanel_OnMouseLeave);
-            this.canvasPanel.MouseHover += new System.EventHandler(this.canvasPanel_MouseHover);
-            // 
-            // topBarTabControl
-            // 
-            this.topBarTabControl.Controls.Add(this.homeTab);
-            this.topBarTabControl.Controls.Add(this.propertiesTab);
-            this.topBarTabControl.Dock = System.Windows.Forms.DockStyle.Top;
-            this.topBarTabControl.Location = new System.Drawing.Point(0, 0);
-            this.topBarTabControl.Name = "topBarTabControl";
-            this.topBarTabControl.SelectedIndex = 0;
-            this.topBarTabControl.Size = new System.Drawing.Size(1272, 184);
-            this.topBarTabControl.TabIndex = 16;
-            // 
-            // homeTab
-            // 
-            this.homeTab.Controls.Add(this.topPanel);
-            this.homeTab.Location = new System.Drawing.Point(4, 25);
-            this.homeTab.Name = "homeTab";
-            this.homeTab.Padding = new System.Windows.Forms.Padding(3);
-            this.homeTab.Size = new System.Drawing.Size(1264, 155);
-            this.homeTab.TabIndex = 0;
-            this.homeTab.Text = "Home";
-            this.homeTab.UseVisualStyleBackColor = true;
-            // 
             // propertiesTab
             // 
             this.propertiesTab.Controls.Add(this.label3);
@@ -297,6 +282,15 @@
             this.propertiesTab.TabIndex = 1;
             this.propertiesTab.Text = "Properties";
             this.propertiesTab.UseVisualStyleBackColor = true;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(8, 3);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(122, 17);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "Main Region Style";
             // 
             // mainRegionStyleBox
             // 
@@ -314,29 +308,34 @@
             this.mainRegionStyleBox.TabIndex = 5;
             this.mainRegionStyleBox.SelectedIndexChanged += new System.EventHandler(this.mainRegionStyleBox_SelectedIndexChanged);
             // 
-            // label3
+            // drawingLines
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(8, 3);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(122, 17);
-            this.label3.TabIndex = 6;
-            this.label3.Text = "Main Region Style";
+            this.drawingLines.FormattingEnabled = true;
+            this.drawingLines.ItemHeight = 16;
+            this.drawingLines.Items.AddRange(new object[] {
+            "Highway",
+            "Road",
+            "Creek"});
+            this.drawingLines.Location = new System.Drawing.Point(245, 36);
+            this.drawingLines.Name = "drawingLines";
+            this.drawingLines.Size = new System.Drawing.Size(120, 84);
+            this.drawingLines.TabIndex = 3;
+            this.drawingLines.SelectedIndexChanged += new System.EventHandler(this.drawingLines_SelectedIndexChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1272, 648);
+            this.Controls.Add(this.topBarTabControl);
             this.Controls.Add(this.canvasPanel);
             this.Name = "Form1";
             this.Text = "Fictional Mapper";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.topPanel.ResumeLayout(false);
-            this.topPanel.PerformLayout();
-            this.canvasPanel.ResumeLayout(false);
             this.topBarTabControl.ResumeLayout(false);
             this.homeTab.ResumeLayout(false);
+            this.topPanel.ResumeLayout(false);
+            this.topPanel.PerformLayout();
             this.propertiesTab.ResumeLayout(false);
             this.propertiesTab.PerformLayout();
             this.ResumeLayout(false);
@@ -350,7 +349,6 @@
         private System.Windows.Forms.Button drawLineButton;
         private System.Windows.Forms.Button viewButton;
         private System.Windows.Forms.Label toolState;
-        private System.Windows.Forms.ListBox drawingLines;
         private System.Windows.Forms.ListBox drawingRegions;
         private System.Windows.Forms.Button drawRegionButton;
         private System.Windows.Forms.ListBox shieldType;
@@ -368,6 +366,7 @@
         private System.Windows.Forms.TabPage propertiesTab;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ListBox mainRegionStyleBox;
+        private System.Windows.Forms.ListBox drawingLines;
     }
 }
 

@@ -9,11 +9,14 @@ using System.Text;
 using System.Collections;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace FictionalMapper
 {
     public partial class Form1 : Form
     {
+
         public RegionType mainRegionStyle;
         private bool mouseInPanel = false;
         public LineType currentLineType;
@@ -42,17 +45,101 @@ namespace FictionalMapper
             toolState.Text = "Tool Being Used: View";
             lineMain = new Pen(Colors.highwayInterior, 5);
             lineOutline = new Pen(Colors.highwayExterior, 7);
-            drawing = new Pen(Color.Black, 5);
+            drawing = new Pen(Color.Black, 3);
             points = new List<Point>();
             region = new SolidBrush(Colors.water);
             elements = new ArrayList();
             g.SmoothingMode = SmoothingMode.AntiAlias;
+            Debug.Close();
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
         }
+
+        public static bool pnpoly(int nvert, double[] vertx, double[] verty, double testx, double testy)
+        {
+            int i, j;
+            bool c = false;
+            for (i = 0, j = nvert - 1; i < nvert; j = i++){
+                if( ((verty[i] > testy) != (verty[j] > testy)) &&
+                    (testx < (vertx[j] - vertx[i]) * (testy - verty[i]) / (verty[j] - verty[i]) + vertx[i]))
+                {
+                    Debug.WriteLine("flip c");
+                    c = c != true;  // flip c
+                }
+            }
+            return c;
+        }
+
+        public bool cursorIsInRectangle(Point[] points)
+        {
+            Debug.WriteLine("\nYEEYEET:\n");
+            Point cursor = canvasPanel.PointToClient(Cursor.Position);
+            Debug.WriteLine("Cursor: " + cursor);
+            double[] slopes = new double[4];
+            double[] vertx = new double[4];
+            double[] verty = new double[4];
+            if(points.Length != 4)
+            {
+                throw new Exception("You gave a 4 argument method " + points.Length + " arguments.");
+            }
+            for(int i = 0; i < 4; i++)
+            {
+                Debug.WriteLine("Rectangle Point: " + points[i]);
+                vertx[i] = points[i].X;
+                verty[i] = points[i].Y;
+            }
+            return pnpoly(4, vertx, verty, cursor.X, cursor.Y);
+            //for(int i = 0; i < 4; i++)
+            //{
+            //    slopes[i] = (double)(points[i].Y - cursor.Y) / (double)(points[i].X - cursor.X);
+            //}
+            //List<double> al = slopes.ToList();
+            //al.Sort();
+            //double product = 1, sum = 0;
+            //foreach(double i in al)
+            //{
+            //    Debug.WriteLine(i);
+            //    product *= i;
+            //    sum += i;
+            //}
+            ////Debug.WriteLine(product);
+            ////Debug.WriteLine(sum);
+        }
+        private Point[] createPathRectangle(Point p1, Point p2)    // Creates a rectangle to represent the area of a line.
+        {                                                       // Used for identifying the part of the line the user can 
+            Point p3, p4, p5, p6;                               // drag his cursor to select the line
+            double slope = (double)(p2.Y - p1.Y) / (double)(p2.X - p1.X);
+            double pSlope = -1 / slope; // rise = (p2.X - p1.X), run = (p2.Y - p1.Y), and multiple 1 of them by -1
+            bool af = Math.Acos(pSlope).Equals(double.NaN);
+            double theta = Math.Acos(pSlope).Equals(double.NaN) ? Math.Acos(slope) : -1 * Math.Acos(pSlope);
+            int a = (int)(4 * Math.Cos(theta));
+            int b = (int)(4 * Math.Sin(theta));
+            if (af)
+            {
+                p3 = new Point(p1.X - a, p1.Y + b);
+                p4 = new Point(p2.X - a, p2.Y + b);
+                p5 = new Point(p1.X + a, p1.Y - b);
+                p6 = new Point(p2.X + a, p2.Y - b);
+            }
+            else
+            {
+                p3 = new Point(p1.X - b, p1.Y + a);
+                p4 = new Point(p2.X - b, p2.Y + a);
+                p5 = new Point(p1.X + b, p1.Y - a);
+                p6 = new Point(p2.X + b, p2.Y - a);
+
+            }
+
+            //g.DrawEllipse(drawing, new Rectangle(p3.X, p3.Y, 1, 1));
+            //g.DrawEllipse(drawing, new Rectangle(p4.X, p4.Y, 1, 1));
+            //g.DrawEllipse(drawing, new Rectangle(p5.X, p5.Y, 1, 1));
+            //g.DrawEllipse(drawing, new Rectangle(p6.X, p6.Y, 1, 1));
+
+            return new Point[4] { p3, p4, p5, p6 };
+        }
+        
 
         private ArrayList sortElements()    // Absolutely terrible O(n^3) algorithm
         {                                   // Sort the list so regions are first, then creeks, then the rest of the lines
@@ -123,9 +210,22 @@ namespace FictionalMapper
                 Point p = canvasPanel.PointToClient(Cursor.Position);
                 g.DrawEllipse(new Pen(Color.Black, 1), new Rectangle(new Point(p.X - 3, p.Y - 3), new Size(6, 6)));
                 points.Add(p);
-            } else if(tool == Tool.PARALLEL)
+            } else if(tool == Tool.MOVE_POINTS)
             {
-
+/*                foreach (object o in elements)
+                {
+                    if (o.GetType() == Type.GetType("FictionalMapper.Line", false, false))
+                    {
+                        for (int i = 1; i < ((Line)o).points.Length; i++)
+                        {
+                            //Debug.WriteLine(((Line)o).points[i - 1].ToString());
+                            //Debug.WriteLine(((Line)o).points[i].ToString());
+                            //Debug.WriteLine("-----");
+                            bool ciir = cursorIsInRectangle(createPathRectangle(((Line)o).points[i], ((Line)o).points[i - 1]));
+                            Debug.WriteLine("Cursor Is In Rectangle: " + ciir);
+                        }
+                    }
+                }*/
             }
         }
 
@@ -291,6 +391,7 @@ namespace FictionalMapper
         {
             points.Clear();
             redraw();
+            canvasPanel.Cursor = Cursors.Cross;
             tool = Tool.LINE;
             toolState.Text = "Tool Being Used: Line";
         }
@@ -298,6 +399,7 @@ namespace FictionalMapper
         private void paneButton_Click(object sender, EventArgs e) // viewButton
         {
             redraw();
+            canvasPanel.Cursor = Cursors.Hand;
             tool = Tool.VIEW;
             toolState.Text = "Tool Being Used: View";
         }
@@ -306,6 +408,7 @@ namespace FictionalMapper
         {
             points.Clear();
             redraw();
+            canvasPanel.Cursor = Cursors.Hand;
             tool = Tool.REGION;
             toolState.Text = "Tool Being Used: Region";
         }
@@ -313,6 +416,7 @@ namespace FictionalMapper
         private void parallelButton_Click(object sender, EventArgs e)
         {
             redraw();
+            canvasPanel.Cursor = Cursors.Cross;
             tool = Tool.PARALLEL;
             toolState.Text = "Tool Being Used: Parallel";
         }
@@ -320,6 +424,7 @@ namespace FictionalMapper
         private void movePointsButton_Click(object sender, EventArgs e)
         {
             redraw();
+            canvasPanel.Cursor = Cursors.Hand;
             tool = Tool.MOVE_POINTS;
             toolState.Text = "Tool Being Used: Move Points";
 
@@ -346,6 +451,20 @@ namespace FictionalMapper
             redraw();
             tool = Tool.INTERSECTION;
             toolState.Text = "Tool Being Used: Intersection";
+
+            foreach (object o in elements)
+            {
+                if (o.GetType() == Type.GetType("FictionalMapper.Line", false, false))
+                {
+                    for (int i = 1; i < ((Line)o).points.Length; i++)
+                    {
+                        Debug.WriteLine(((Line)o).points[i-1].ToString());
+                        Debug.WriteLine(((Line)o).points[i].ToString());
+                        Debug.WriteLine("-----");
+                        createPathRectangle(((Line)o).points[i], ((Line)o).points[i - 1]);
+                    }
+                }
+            }
         }
 
         private void perpendicularTool_Click(object sender, EventArgs e)
@@ -359,6 +478,34 @@ namespace FictionalMapper
         {
             mainRegionStyle = (RegionType)mainRegionStyleBox.SelectedIndex;
             redraw();
+        }
+
+        private void canvasPanel_Hover(object sender, NewControls.MapPanel.HoverEventArgs e)
+        {
+            if (tool == Tool.MOVE_POINTS)
+            {
+                Debug.WriteLine("hovering");
+                foreach (object o in elements)
+                {
+                    if (o.GetType() == Type.GetType("FictionalMapper.Line", false, false))
+                    {
+                        for (int i = 1; i < ((Line)o).points.Length; i++)
+                        {
+                            
+                            //Debug.WriteLine(((Line)o).points[i - 1].ToString());
+                            //Debug.WriteLine(((Line)o).points[i].ToString());
+                            //Debug.WriteLine("-----");
+                            Point cursor = canvasPanel.PointToClient(Cursor.Position);
+                            bool ciir = cursorIsInRectangle(createPathRectangle(((Line)o).points[i], ((Line)o).points[i - 1]));
+                            Debug.WriteLine("Cursor Is In Rectangle: " + ciir);
+                            if (ciir)
+                            {
+                                g.DrawEllipse(new Pen(Color.Black, 1), new Rectangle(new Point(cursor.X - 3, cursor.Y - 3), new Size(6, 6)));
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     public enum Tool

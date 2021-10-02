@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace FictionalMapper.NewControls
 {
@@ -37,8 +38,12 @@ namespace FictionalMapper.NewControls
 
         protected void OnHover(bool active)
         {
+            //Debug.WriteLine("HOVERING");
             EventHandler<HoverEventArgs> hover = Hover;
-            if (hover != null) hover(this, new HoverEventArgs(active));
+            if (hover != null)
+            {
+                hover(this, new HoverEventArgs(active));
+            }
         }
     }
 }

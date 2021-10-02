@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.30320.27
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FictionalMapper", "FictionalMapper.csproj", "{2A91C831-03B3-4A73-B715-9E72568A54E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FictionalMapperTests", "..\FictionalMapperTests\FictionalMapperTests.csproj", "{AF1FE7F7-D694-4017-A2F9-38E201458C5B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{2A91C831-03B3-4A73-B715-9E72568A54E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2A91C831-03B3-4A73-B715-9E72568A54E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2A91C831-03B3-4A73-B715-9E72568A54E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF1FE7F7-D694-4017-A2F9-38E201458C5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF1FE7F7-D694-4017-A2F9-38E201458C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF1FE7F7-D694-4017-A2F9-38E201458C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF1FE7F7-D694-4017-A2F9-38E201458C5B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
